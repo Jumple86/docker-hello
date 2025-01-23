@@ -9,6 +9,9 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Show user
+        run: whoami
+
       # 1. 檢出代碼
       - name: Checkout code
         uses: actions/checkout@v4
