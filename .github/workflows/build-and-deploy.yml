@@ -1,0 +1,44 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted  # 指定使用自建 Runner
+    steps:
+      # 1. 檢出代碼
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 獲取提交的短哈希值
+      - name: Extract short commit hash
+        id: vars
+        run: echo "COMMIT_HASH=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+
+      # 3. 編譯和打包 JAR 文件
+      - name: Build JAR
+        run: ./gradlew build  # 如果使用 Gradle，替換為 ./gradlew build
+
+      # 4. 構建 Docker 鏡像
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/app:${{ env.COMMIT_HASH }} .
+
+      # 5. 推送鏡像到 Docker Hub
+      - name: Push Docker Image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-app:latest
+
+      # 6. 運行 Docker 容器
+      - name: Run Docker Container
+        run: |
+          docker stop app || true
+          docker rm app || true
+          docker run -d --name app -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/app:${{ env.COMMIT_HASH }}
