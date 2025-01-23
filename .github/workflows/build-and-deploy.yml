@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: self-hosted  # 指定使用自建 Runner
+    runs-on: ubuntu-22.04
     steps:
       # 1. 檢出代碼
       - name: Checkout code
