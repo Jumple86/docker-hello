@@ -44,6 +44,6 @@ jobs:
       # 6. 運行 Docker 容器
       - name: Run Docker Container
         run: |
-          docker stop app || true
-          docker rm app || true
+          docker stop docker-hello || true
+          docker rm docker-hello || true
           docker run -d --name docker-hello -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/app:${{ env.COMMIT_HASH }}
