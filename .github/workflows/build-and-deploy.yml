@@ -23,7 +23,7 @@ jobs:
 
       # 3. 編譯和打包 JAR 文件
       - name: Build JAR
-        run: ./gradlew build --no-daemon  # 如果使用 Gradle，替換為 ./gradlew build
+        run: ./gradlew build --no-daemon
 
       # 4. 構建 Docker 鏡像
       - name: Build Docker Image
