@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Show user
         run: whoami
@@ -45,4 +45,4 @@ jobs:
         run: |
           docker stop app || true
           docker rm app || true
-          docker run -d --name app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/app:${{ env.COMMIT_HASH }}
+          docker run -d --name docker-hello -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/app:${{ env.COMMIT_HASH }}
